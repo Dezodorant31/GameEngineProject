@@ -1,8 +1,8 @@
 import socket, threading, json
 
 
-# Основной класс сервера
 class GameServer:
+    """Основной класс сервера"""
     def __init__(self, host="0.0.0.0", port=5555):
         self.host = host
         self.port = port
@@ -11,6 +11,7 @@ class GameServer:
         self.lock = threading.Lock()
 
     def start(self):
+        """Запускает сервер"""
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen()
         print(f"Сервер запущен на {self.host}:{self.port}")
@@ -22,6 +23,7 @@ class GameServer:
             threading.Thread(target=self.handle_client, args=(conn, )).start()
 
     def handle_client(self, conn):
+        """Обрабатывает клиента"""
         while True:
             try:
                 data = conn.recv(1024).decode()
@@ -42,6 +44,7 @@ class GameServer:
         conn.close()
 
     def broadcast_positions(self):
+
         positions = json.dumps(self.clients)
 
         with self.lock:

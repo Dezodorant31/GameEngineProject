@@ -1,14 +1,19 @@
 import pygame
 from network.client import NetworkClient
+from core.settings_manager import SettingsManager
 
 
-# Основной класс игры
 class Game:
+    """Основной класс игры"""
     def __init__(self, width=800, height=600, server_ip="127.0.0.1", server_port=5555):
         pygame.init()
-        self.width = width
-        self.height = height
-        self.screen = pygame.display.set_mode((self.width, self.height))
+
+        self.settings = SettingsManager()
+        self.width, self.height = self.settings.get("resolution")
+        self.fullscreen = self.settings.get("fullscreen")
+
+        flags = pygame.FULLSCREEN if self.fullscreen else 0
+        self.screen = pygame.display.set_mode((self.width, self.height), flags)
         pygame.display.set_caption("GameEngineProject")
         self.clock = pygame.time.Clock()
         self.running = True
@@ -17,6 +22,7 @@ class Game:
         self.network.connect()
 
     def run(self):
+        """Запуск игры и главного цикла"""
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
